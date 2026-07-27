@@ -9,3 +9,5 @@ StarryNight transforms your desktop into a serene night sky. Watch as stars twin
 Originally designed as a Spotify theme by Brandon Chen and Julissa Laignelet for Spicetify, this version was ported from the original theme files into a single standalone HTML file. All Spotify/Spicetify-specific functions were removed and adapted so it works as a living desktop wallpaper, with no music player or Spicetify installation required.
 
 Perfect for anyone who wants a calm, minimal, and slightly magical backdrop for their workspace.
+
+LINK OF THE GOATS: Original project: https://github.com/spicetify/spicetify-themes/tree/master/StarryNight
