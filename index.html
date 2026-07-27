@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Starry Night Wallpaper</title>
+    <style>
+        :root {
+            --bg-top: #0b0f2a;
+            --bg-bottom: #05060f;
+            --star-color: #ffffff;
+            --star-glow: #cfd8ff;
+            --shooting-star-color: #ffffff;
+            --shooting-star-glow: 255, 255, 255;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+        }
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        @keyframes twinkle1 {
+            0%, 100% { box-shadow: 0px 0px 8px 2px var(--star-glow); }
+            50% { box-shadow: 0px 0px 1px 0px var(--star-glow); }
+        }
+
+        @keyframes twinkle2 {
+            0%, 100% { box-shadow: 0px 0px 1px 0px var(--star-glow); }
+            50% { box-shadow: 0px 0px 8px 2px var(--star-glow); }
+        }
+
+        .shootingstar {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--shooting-star-color);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .shootingstar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--shooting-star-color), transparent);
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: rotate(315deg) translateX(0);
+                opacity: 1;
+            }
+
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: rotate(315deg) translateX(-1500px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-container" id="bgContainer"></div>
+
+    <script>
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const container = document.getElementById('bgContainer');
+
+        // ---- Estrelas ----
+        function createStars() {
+            const canvasSize = container.clientWidth * container.clientHeight;
+            const starsFraction = canvasSize / 4000;
+
+            for (let i = 0; i < starsFraction; i++) {
+                const size = Math.random() < 0.5 ? 1 : 2;
+
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.left = `${random(0, 99)}%`;
+                star.style.top = `${random(0, 99)}%`;
+                star.style.opacity = random(0.5, 1);
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.backgroundColor = 'var(--star-color)';
+                star.style.borderRadius = '50%';
+
+                if (Math.random() < 1 / 5) {
+                    const anim = Math.random() < 0.5 ? 'twinkle1' : 'twinkle2';
+                    star.style.animation = `${anim} ${random(3, 6)}s infinite`;
+                }
+
+                container.appendChild(star);
+            }
+        }
+
+        // ---- Estrelas cadentes ----
+        function spawnShootingStar(star) {
+            if (Math.random() < 0.75) {
+                star.style.top = '-4px';
+                star.style.right = `${random(0, 90)}%`;
+                star.style.left = 'auto';
+            } else {
+                star.style.top = `${random(0, 50)}%`;
+                star.style.right = '-4px';
+                star.style.left = 'auto';
+            }
+
+            const glowColor = `rgba(${getComputedStyle(document.documentElement).getPropertyValue('--shooting-star-glow')},0.1)`;
+            star.style.boxShadow = `0 0 0 4px ${glowColor}, 0 0 0 8px ${glowColor}, 0 0 20px ${glowColor}`;
+
+            star.style.animation = 'none';
+            void star.offsetWidth; // força reinício da animação
+            const duration = Math.floor(random(3, 6));
+            star.style.animation = `shoot ${duration}s linear`;
+        }
+
+        function createShootingStars(count) {
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('span');
+                star.className = 'shootingstar';
+                container.appendChild(star);
+
+                // atraso inicial diferente para cada estrela
+                setTimeout(() => {
+                    spawnShootingStar(star);
+                    star.addEventListener('animationend', () => spawnShootingStar(star));
+                }, random(0, 7000));
+            }
+        }
+
+        createStars();
+        createShootingStars(4);
+    </script>
+</body>
+
+</html>
